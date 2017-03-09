@@ -54,6 +54,8 @@ class GooglePlayAPI(object):
     authSubToken = None
     # HTTP_PROXY = "http://81.137.100.158"
 
+    USER_AGENT = 'Android-Finsky/6.8.44.F-all%20%5B0%5D%203087104 (api=3,versionCode=80684400,sdk=23,device=bullhead,hardware=bullhead,product=bullhead,platformVersionRelease=6.0.1,model=Nexus%205X,buildId=MHC19Q,isWideScreen=0)'
+    DL_USER_AGENT = 'AndroidDownloadManager/6.0.1 (Linux; U; Android 6.0.1; Nexus 5X Build/MHC19Q)'
 
     def __init__(self, androidId=None, lang=None, debug=False): # you must use a device-associated androidId value
         self.preFetch = {}
@@ -190,10 +192,7 @@ class GooglePlayAPI(object):
                                     "X-DFE-Unsupported-Experiments": "nocache:billing.use_charging_poller,market_emails,buyer_currency,prod_baseline,checkin.set_asset_paid_app_field,shekel_test,content_ratings,buyer_currency_in_app,nocache:encrypted_apk,recent_changes",
                                     "X-DFE-Device-Id": self.androidId,
                                     "X-DFE-Client-Id": "am-android-google",
-                                    #"X-DFE-Logging-Id": self.loggingId2, # Deprecated?
-                                    # "User-Agent": "Android-Finsky/4.4.3 (api=3,versionCode=8016014,sdk=22,device=GT-I9300,hardware=aries,product=GT-I9300)",
-                                    "User-Agent": "Android-Finsky/4.4.3 (api=3,versionCode=8016014,sdk=22,device=hammerhead,hardware=hammerhead,product=hammerhead)",
-                                    # "User-Agent": "Android-Finsky/3.7.13 (api=3,versionCode=8013013,sdk=22,device=crespo,hardware=herring,product=soju)",
+                                    "User-Agent": self.USER_AGENT,
                                     "X-DFE-SmallestScreenWidthDp": "335",
                                     "X-DFE-Filter-Level": "3",
                                     "Accept-Encoding": "",
@@ -319,7 +318,7 @@ class GooglePlayAPI(object):
         }
 
         headers = {
-                   "User-Agent" : "AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)",
+                   "User-Agent" : self.DL_USER_AGENT,
                    "Accept-Encoding": "",
                   }
 
