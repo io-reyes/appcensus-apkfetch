@@ -7,3 +7,5 @@
 
 # ignore downloaded apps
 *.apk
+
+venv/

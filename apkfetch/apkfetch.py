@@ -1,10 +1,14 @@
 import os
+import logging
+import time
 
-from googleplay_api.googleplay import GooglePlayAPI
+from googleplay_api.googleplay import GooglePlayAPI,LoginError
 
 api = None
-def init_api(acct_email, acct_password, gsf):
+def init_api(acct_email, acct_password, gsf, max_attempts=10, cooldown_secs=5):
     global api
+    assert max_attempts > 0, 'max_attempts was %d, must be greater than 0' % max_attempts
+    assert cooldown_secs > 0, 'cooldown_secs was %d, must be greater than 0' % cooldown_secs
 
     if api is None:
         # Ensure we have all the credentials we need
@@ -12,9 +16,23 @@ def init_api(acct_email, acct_password, gsf):
         assert acct_password is not None, 'Account password is required'
         assert gsf is not None, 'Google Services Framework ID is required'
 
-        # Authenticate the API
+        # Authenticate the API, keep trying until it works
         api = GooglePlayAPI(androidId=gsf)
-        api.login(email=acct_email, password=acct_password)
+
+        for attempt in range(max(1, max_attempts)):
+            attempt = attempt + 1
+            try:
+                api.login(email=acct_email, password=acct_password)
+                logging.info('Successfully logged in as %s' % acct_email)
+                return
+            except LoginError as e:
+                logging.warning('BadAuthentication on attempt %d/%d' % (attempt, max_attempts))
+
+                if(attempt == max_attempts):
+                    raise e
+
+                logging.warning('Retrying authentication in %d seconds' % cooldown_secs)
+                time.sleep(cooldown_secs)
 
 def get_metadata(package):
     # Ensure the API is set
