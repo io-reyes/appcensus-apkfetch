@@ -1,11 +1,12 @@
 import os
 import logging
 import time
+import publicmeta
 
 from googleplay_api.googleplay import GooglePlayAPI,LoginError
 
 api = None
-def init_api(acct_email, acct_password, gsf, max_attempts=10, cooldown_secs=5):
+def init_api(acct_email, acct_password, gsf, max_attempts=15, cooldown_secs=10):
     global api
     assert max_attempts > 0, 'max_attempts was %d, must be greater than 0' % max_attempts
     assert cooldown_secs > 0, 'cooldown_secs was %d, must be greater than 0' % cooldown_secs
@@ -39,9 +40,39 @@ def get_metadata(package):
     global api
     assert api is not None, 'Need to call init_api() before attempting to get info about an APK'
 
-    # Get info about the app
+    # Get info about the app (authenticated)
     metadata = api.details(package)
-    return api.toDict(metadata)
+    metadata = api.toDict(metadata)
+
+    # Get info about the app (public)
+    metadata['public-meta'] = get_public_metadata(package)
+
+    return metadata
+
+def get_public_metadata(package):
+    # iap
+    # dev website, fallback privacy policy, fallback email
+    # dev privacy policy
+    # dev email
+    # dev id number, fallback dev id string
+    # publish timestamp
+    # ads
+    # free or not
+    # categories
+    app_page = publicmeta.get_app_page(package)
+    metadata = { \
+        'iap' : publicmeta.has_iap(app_page), \
+        'devSite' : publicmeta.get_dev_website(app_page), \
+        'devPrivacy' : publicmeta.get_dev_privacy(app_page), \
+        'devEmail' : publicmeta.get_dev_email(app_page), \
+        'devId' : publicmeta.get_dev_id(app_page), \
+        'publishTimestamp' : publicmeta.get_publish_timestamp_utc(app_page), \
+        'ads' : publicmeta.has_ads(app_page), \
+        'free' : publicmeta.is_free(app_page), \
+        'categories' : publicmeta.get_categories(app_page)
+    }
+
+    return metadata
 
 def get_apk(package, outdir=None):
     # Ensure the output directory exists if it's specified
@@ -64,4 +95,4 @@ def get_apk(package, outdir=None):
     with open(filepath, 'wb') as f:
         f.write(api.download(package, version_code))
     
-    print('Saved app to %s' % filepath)
+    logging.info('Saved app to %s' % filepath)
