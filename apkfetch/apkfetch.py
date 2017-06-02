@@ -50,15 +50,6 @@ def get_metadata(package):
     return metadata
 
 def get_public_metadata(package):
-    # iap
-    # dev website, fallback privacy policy, fallback email
-    # dev privacy policy
-    # dev email
-    # dev id number, fallback dev id string
-    # publish timestamp
-    # ads
-    # free or not
-    # categories
     app_page = publicmeta.get_app_page(package)
     metadata = { \
         'iap' : publicmeta.has_iap(app_page), \
