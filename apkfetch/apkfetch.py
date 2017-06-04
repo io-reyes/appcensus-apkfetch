@@ -65,20 +65,21 @@ def get_public_metadata(package):
 
     return metadata
 
-def get_apk(package, outdir=None):
+def get_apk(package, version_code=None, outdir=None):
     # Ensure the output directory exists if it's specified
     assert outdir is None or os.path.isdir(outdir), 'Output directory %s does not exist' % outdir
 
-    # Get info about the app
-    store_listing = get_metadata(package)
-    assert 'docV2' in store_listing, 'Store listing unavailable for %s' % package
-    store_listing = store_listing['docV2']
+    # Get info about the app if no version code was provided
+    if(version_code is None):
+        store_listing = get_metadata(package)
+        assert 'docV2' in store_listing, 'Store listing unavailable for %s' % package
+        store_listing = store_listing['docV2']
 
-    assert 'details' in store_listing
-    assert 'appDetails' in store_listing['details'], 'App details unavailable for %s' % package
-    assert 'versionCode' in store_listing['details']['appDetails'], 'Version code does not exist for %s' % package
-    assert 'versionString' in store_listing['details']['appDetails'], 'Version string does not exist for %s' % package
-    version_code = store_listing['details']['appDetails']['versionCode']
+        assert 'details' in store_listing
+        assert 'appDetails' in store_listing['details'], 'App details unavailable for %s' % package
+        assert 'versionCode' in store_listing['details']['appDetails'], 'Version code does not exist for %s' % package
+        assert 'versionString' in store_listing['details']['appDetails'], 'Version string does not exist for %s' % package
+        version_code = store_listing['details']['appDetails']['versionCode']
 
     # Download the app as <packagename>-<versioncode>.apk
     filename = '%s-%d.apk' % (package, version_code)
