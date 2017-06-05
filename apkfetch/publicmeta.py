@@ -98,6 +98,21 @@ def get_categories(html_tree):
     cat_elts = html_tree.xpath('//a[contains(@class, "category")]/span/text()')
     return cat_elts
 
+def get_icon_url(html_tree):
+    icon_elts = html_tree.xpath('//div[contains(@class, "cover-container")]/img[contains(@class, "cover-image")]')
+    assert len(icon_elts) == 1, '%d app icons found, expecting exactly 1' % len(icon_elts)
+    icon_src = icon_elts[0].get('src').encode('utf-8')
+
+    # Example value: //lh3.googleusercontent.com/ZZPdzvlpK9r_Df9C3M7j1rNRi7hhHRvPhlklJ3lfi5jk86Jd1s0Y5wcQ1QgbVaAP5Q=w300-rw
+    # Need to prepend https:// and remove the =w300-rw
+    if(icon_src.startswith('//')):
+        icon_src = 'https:%s' % icon_src
+
+    if(icon_src.endswith('=w300-rw')):
+        icon_src = icon_src.rsplit('=', 1)[0]
+
+    return icon_src
+
 def _test(package):
     page = get_app_page(package)
 
@@ -112,6 +127,7 @@ def _test(package):
     print('ads: %s' % has_ads(page))
     print('free: %s' % is_free(page))
     print('categories: %s' % get_categories(page))
+    print('icon-url: %s' % get_icon_url(page))
 
 if __name__ == '__main__':
     _test('com.rovio.angrybirds')
