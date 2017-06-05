@@ -60,7 +60,8 @@ def get_public_metadata(package):
         'publishTimestamp' : publicmeta.get_publish_timestamp_utc(app_page), \
         'ads' : publicmeta.has_ads(app_page), \
         'free' : publicmeta.is_free(app_page), \
-        'categories' : publicmeta.get_categories(app_page)
+        'categories' : publicmeta.get_categories(app_page), \
+        'appIcon': publicmeta.get_icon_url(app_page)
     }
 
     return metadata
