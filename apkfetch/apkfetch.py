@@ -61,7 +61,8 @@ def get_public_metadata(package):
         'ads' : publicmeta.has_ads(app_page), \
         'free' : publicmeta.is_free(app_page), \
         'categories' : publicmeta.get_categories(app_page), \
-        'appIcon': publicmeta.get_icon_url(app_page)
+        'appIcon': publicmeta.get_icon_url(app_page), \
+        'installs': publicmeta.get_install_count(app_page)
     }
 
     return metadata
