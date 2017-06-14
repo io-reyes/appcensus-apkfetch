@@ -113,6 +113,20 @@ def get_icon_url(html_tree):
 
     return icon_src
 
+def get_install_count(html_tree):
+    install_elts = html_tree.xpath('//div[contains(@itemprop, "numDownloads")]/text()')
+    assert len(install_elts) == 1, '%d install count elements found, expecting exactly 1' % len(install_elts)
+    install_str = install_elts[0].encode('utf-8')
+
+    # Example: 1,000,000 - 5,000,000
+    # Report the lower bound as an integer, in this case 1000000
+    install_str = install_str.strip().replace(',', '').replace(' ', '')
+    split_install_str = install_str.split('-')
+    assert len(split_install_str) == 2, 'Install count string %s does not look like "1000000-5000000"' % install_str
+    lower_count = int(split_install_str[0])
+
+    return lower_count
+
 def _test(package):
     page = get_app_page(package)
 
@@ -128,9 +142,11 @@ def _test(package):
     print('free: %s' % is_free(page))
     print('categories: %s' % get_categories(page))
     print('icon-url: %s' % get_icon_url(page))
+    print('install-count: %d' % get_install_count(page))
 
 if __name__ == '__main__':
     _test('com.rovio.angrybirds')
     _test('com.ustwo.monumentvalley')
     _test('com.google.android.apps.youtube.kids')
     _test('com.candidate.chestsimulatorforcr')
+    _test('edu.berkeley.icsi.sensormonitor')
