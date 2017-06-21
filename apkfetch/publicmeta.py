@@ -98,6 +98,13 @@ def get_categories(html_tree):
     cat_elts = html_tree.xpath('//a[contains(@class, "category")]/span/text()')
     return cat_elts
 
+def is_family(html_tree):
+    cat_elts = html_tree.xpath('//a[contains(@class, "category")]')
+    cat_names = [x.get('href').split('/')[-1] for x in cat_elts]
+    family_cats = [x for x in cat_names if x.startswith('FAMILY')]
+
+    return len(family_cats) > 0
+
 def get_icon_url(html_tree):
     icon_elts = html_tree.xpath('//div[contains(@class, "cover-container")]/img[contains(@class, "cover-image")]')
     assert len(icon_elts) == 1, '%d app icons found, expecting exactly 1' % len(icon_elts)
@@ -143,6 +150,7 @@ def _test(package):
     print('categories: %s' % get_categories(page))
     print('icon-url: %s' % get_icon_url(page))
     print('install-count: %d' % get_install_count(page))
+    print('is-family: %s' % is_family(page))
 
 if __name__ == '__main__':
     _test('com.rovio.angrybirds')
@@ -150,3 +158,4 @@ if __name__ == '__main__':
     _test('com.google.android.apps.youtube.kids')
     _test('com.candidate.chestsimulatorforcr')
     _test('edu.berkeley.icsi.sensormonitor')
+    _test('co.romesoft.toddlers.puzzle.pirates')
