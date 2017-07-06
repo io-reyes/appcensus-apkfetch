@@ -27,6 +27,7 @@ def get_dev_privacy(html_tree):
         link_text = elt.xpath('text()')[0]
         if(link_text.lower().strip() == 'privacy policy'):
             link = elt.get('href').encode('utf-8').replace('https://www.google.com/url?q=', '', 1)
+            link = link.rsplit('&sa=')[0]
             return link
 
     return None
