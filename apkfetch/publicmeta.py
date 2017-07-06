@@ -2,6 +2,7 @@ from lxml import html
 import requests
 import logging
 import re
+import urllib
 from datetime import datetime
 
 def get_app_page(package_name, base_url='https://play.google.com/store/apps/details?id=%s&hl=en', user_agent='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'):
@@ -26,8 +27,7 @@ def get_dev_privacy(html_tree):
     for elt in dev_elts:
         link_text = elt.xpath('text()')[0]
         if(link_text.lower().strip() == 'privacy policy'):
-            link = elt.get('href').encode('utf-8').replace('https://www.google.com/url?q=', '', 1)
-            link = link.rsplit('&sa=')[0]
+            link = _clean_play_store_link(elt.get('href').encode('utf-8'))
             return link
 
     return None
@@ -43,6 +43,15 @@ def get_dev_email(html_tree):
 
     return None
 
+def _clean_play_store_link(url):
+    # Eliminate Play Store tracking BS surrounding the real URL
+    # e.g., https://www.google.com/url?q=http://www.animocabrands.com&sa=D&usg=AFQjCNFsmmCpdweYyOvrV6bSNSZ-xWzEmg
+    cleaned = urllib.unquote(url)
+    cleaned = cleaned.replace('https://www.google.com/url?q=', '', 1)
+    cleaned = cleaned.rsplit('&sa=')[0]
+
+    return cleaned
+
 def get_dev_website(html_tree):
     # Priority order, if some are unavailable:
     # 1. "Visit website" link
@@ -55,7 +64,7 @@ def get_dev_website(html_tree):
     for elt in dev_elts:
         link_text = elt.xpath('text()')[0]
         if(link_text.lower().strip() == 'visit website'):
-            link = elt.get('href').encode('utf-8').replace('https://www.google.com/url?q=', '', 1)
+            link = _clean_play_store_link(elt.get('href').encode('utf-8'))
             break
 
     if(link is None):
@@ -160,3 +169,4 @@ if __name__ == '__main__':
     _test('com.candidate.chestsimulatorforcr')
     _test('edu.berkeley.icsi.sensormonitor')
     _test('co.romesoft.toddlers.puzzle.pirates')
+    _test('com.artygeekapps.app1095')
