@@ -6,7 +6,7 @@ import publicmeta
 from googleplay_api.googleplay import GooglePlayAPI,LoginError
 
 api = None
-def init_api(acct_email, acct_password, gsf, max_attempts=15, cooldown_secs=10):
+def init_api(acct_email, acct_password, gsf, auth_sub_token=None, max_attempts=15, cooldown_secs=10):
     global api
     assert max_attempts > 0, 'max_attempts was %d, must be greater than 0' % max_attempts
     assert cooldown_secs > 0, 'cooldown_secs was %d, must be greater than 0' % cooldown_secs
@@ -23,7 +23,7 @@ def init_api(acct_email, acct_password, gsf, max_attempts=15, cooldown_secs=10):
         for attempt in range(max(1, max_attempts)):
             attempt = attempt + 1
             try:
-                api.login(email=acct_email, password=acct_password)
+                api.login(email=acct_email, password=acct_password, authSubToken=auth_sub_token)
                 logging.info('Successfully logged in as %s' % acct_email)
                 return
             except LoginError as e:
