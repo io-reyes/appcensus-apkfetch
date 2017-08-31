@@ -17,6 +17,13 @@ def get_app_page(package_name, base_url='https://play.google.com/store/apps/deta
     
     resp.raise_for_status()
 
+def get_app_name(html_tree):
+    name_elts = html_tree.xpath('//*[@id="body-content"]/div/div/div[1]/div[1]/div/div[1]/div/div[2]/h1/div')
+    assert len(name_elts) == 1, '%d app name elements found, expecting exactly 1' % len(name_elts)
+    name = name_elts[0].xpath('text()')[0].encode('utf-8')
+
+    return name
+
 def has_iap(html_tree):
     iap_elts = html_tree.xpath('//div[contains(@class, "inapp-msg")]/text()')
     return len(iap_elts) > 0
@@ -149,6 +156,7 @@ def _test(package):
 
     print('-----')
     print('package: %s' % package)
+    print('name: %s' % get_app_name(page))
     print('iap: %s' % has_iap(page))
     print('dev-site: %s' % get_dev_website(page))
     print('dev-email: %s' % get_dev_email(page))
