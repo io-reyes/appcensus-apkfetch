@@ -54,8 +54,11 @@ class GooglePlayAPI(object):
     authSubToken = None
     # HTTP_PROXY = "http://81.137.100.158"
 
-    USER_AGENT = 'Android-Finsky/6.8.44.F-all%20%5B0%5D%203087104 (api=3,versionCode=80684400,sdk=23,device=bullhead,hardware=bullhead,product=bullhead,platformVersionRelease=6.0.1,model=Nexus%205X,buildId=MHC19Q,isWideScreen=0)'
-    DL_USER_AGENT = 'AndroidDownloadManager/6.0.1 (Linux; U; Android 6.0.1; Nexus 5X Build/MHC19Q)'
+    #USER_AGENT = 'Android-Finsky/6.8.44.F-all%20%5B0%5D%203087104 (api=3,versionCode=80684400,sdk=23,device=bullhead,hardware=bullhead,product=bullhead,platformVersionRelease=6.0.1,model=Nexus%205X,buildId=MHC19Q,isWideScreen=0)'
+    #DL_USER_AGENT = 'AndroidDownloadManager/6.0.1 (Linux; U; Android 6.0.1; Nexus 5X Build/MHC19Q)'
+
+    USER_AGENT = 'Android-Finsky/4.4.3 (api=3,versionCode=8013013,sdk=19,device=hammerhead,hardware=hammerhead,product=hammerhead)'
+    DL_USER_AGENT = 'AndroidDownloadManager/4.4.3 (Linux; U; Android 4.4.3; Nexus S Build/JRO03E)'
 
     def __init__(self, androidId=None, lang=None, debug=False): # you must use a device-associated androidId value
         self.preFetch = {}
